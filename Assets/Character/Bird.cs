@@ -1,9 +1,40 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Bird : MonoBehaviour
 {
+    Vector3 _initialPostion;
+    private bool _birdWasLaunched;
+    private float _timeSittingAround;
+
+    private float _launchPower = 300;
+    
+    private void Awake()
+    {
+        _initialPostion = transform.position;
+    }
+
+    private void Update()
+    {
+        if( _birdWasLaunched && GetComponent<Rigidbody2D>().velocity.magnitude <= 0.1 )
+        {
+            _timeSittingAround += Time.deltaTime;
+        }
+
+
+        if ( transform.position.y > 10 || transform.position.y < -10 || transform.position.x > 10 || transform.position.x < -10 || _timeSittingAround > 2
+        
+        )
+        {
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(currentSceneName);
+            
+        }
+        
+    }
+
     private void OnMouseDown()
     {
         GetComponent<SpriteRenderer>().color = Color.red;
@@ -12,6 +43,11 @@ public class Bird : MonoBehaviour
     private void OnMouseUp()
     {
         GetComponent<SpriteRenderer>().color = Color.white;
+        Vector2 directionToInitialPosition = _initialPostion - transform.position;
+        GetComponent<Rigidbody2D>().AddForce(directionToInitialPosition * _launchPower);
+        GetComponent<Rigidbody2D>().gravityScale = 1;
+        _birdWasLaunched = true;
+
     }
 
     private void OnMouseDrag()
