@@ -9,7 +9,7 @@ public class Bird : MonoBehaviour
     private bool _birdWasLaunched;
     private float _timeSittingAround;
 
-    private float _launchPower = 300;
+    [SerializeField] private float _launchPower = 300;
     
     private void Awake()
     {
@@ -18,13 +18,17 @@ public class Bird : MonoBehaviour
 
     private void Update()
     {
+
+        GetComponent<LineRenderer>().SetPosition(1, _initialPostion);
+        GetComponent<LineRenderer>().SetPosition(0, transform.position);
+
         if( _birdWasLaunched && GetComponent<Rigidbody2D>().velocity.magnitude <= 0.1 )
         {
             _timeSittingAround += Time.deltaTime;
         }
 
 
-        if ( transform.position.y > 10 || transform.position.y < -10 || transform.position.x > 10 || transform.position.x < -10 || _timeSittingAround > 2
+        if ( transform.position.y > 10 || transform.position.y < -10 || transform.position.x > 10 || transform.position.x < -10 || _timeSittingAround > 3
         
         )
         {
@@ -38,6 +42,7 @@ public class Bird : MonoBehaviour
     private void OnMouseDown()
     {
         GetComponent<SpriteRenderer>().color = Color.red;
+        GetComponent<LineRenderer>().enabled = true;
     }
 
     private void OnMouseUp()
@@ -48,6 +53,7 @@ public class Bird : MonoBehaviour
         GetComponent<Rigidbody2D>().gravityScale = 1;
         _birdWasLaunched = true;
 
+        GetComponent<LineRenderer>().enabled = false;
     }
 
     private void OnMouseDrag()
